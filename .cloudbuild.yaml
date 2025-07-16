@@ -1,17 +1,20 @@
 steps:
+  # Step 1: Build Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/arcane-legacy-466004-s7/admin-backend', '.']
 
+  # Step 2: Push image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/arcane-legacy-466004-s7/admin-backend']
 
+  # Step 3: Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
       [
         'run',
         'deploy',
-        'admin-backend',
+        'admin-backend',  # Cloud Run service name
         '--image',
         'gcr.io/arcane-legacy-466004-s7/admin-backend',
         '--region',
@@ -22,3 +25,6 @@ steps:
         '--port',
         '3000'
       ]
+
+images:
+  - 'gcr.io/arcane-legacy-466004-s7/admin-backend'
