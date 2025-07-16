@@ -1,18 +1,18 @@
-# Use Node.js version 22
+# Use Node 22
 FROM node:22
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Install dependencies
+# Copy package files and install
 COPY package*.json ./
 RUN npm install
 
-# Copy the rest of the app
+# Copy all project files
 COPY . .
 
-# Expose the production port
-EXPOSE 3000
+# Expose Cloud Run port
+EXPOSE 8080
 
-# Start the server
-CMD ["node", "index.js"]
+# Start using PM2 with cluster mode off (one instance)
+CMD ["npx", "pm2-runtime", "index.js"]
