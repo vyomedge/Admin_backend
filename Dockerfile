@@ -1,18 +1,18 @@
-# Dockerfile
-FROM node:18
+# Use Node.js version 22
+FROM node:22
 
-# Create app directory
-WORKDIR /usr/src/app
+# Set the working directory
+WORKDIR /app
 
-# Install app dependencies
+# Install dependencies
 COPY package*.json ./
 RUN npm install
 
-# Copy app source
+# Copy the rest of the app
 COPY . .
 
-# Expose port
-EXPOSE 8080
+# Expose the production port
+EXPOSE 3000
 
-# Start the app
-CMD [ "npm", "start" ]
+# Start the server
+CMD ["node", "index.js"]
