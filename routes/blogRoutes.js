@@ -14,23 +14,14 @@ const express = require('express');
 const router = express.Router();
 const blogController = require('../controllers/blogController');
 const { protect } = require('../middleware/auth');
+const upload = require('../middlewares/upload');
 
-// Apply `protect` to all routes
 router.use(protect);
 
-// GET all blogs
 router.get('/', blogController.getAllBlogs);
-
-// GET a single blog by ID
 router.get('/:id', blogController.getBlogById);
-
-// CREATE a new blog
-router.post('/', blogController.createBlog);
-
-// UPDATE a blog
-router.put('/:id', blogController.updateBlog);
-
-// DELETE a blog
+router.post('/', upload.single('featuredImage'), blogController.createBlog);
+router.put('/:id', upload.single('featuredImage'), blogController.updateBlog);
 router.delete('/:id', blogController.deleteBlog);
 
 module.exports = router;
