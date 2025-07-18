@@ -22,13 +22,6 @@ const blogSchema = new Schema({
     type: [String],
     validate: [tags => tags.length <= 10, 'Maximum 10 tags allowed']
   },
-  uid: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    lowercase: true
-  },
   featuredImage: {
     url: {
       type: String,
