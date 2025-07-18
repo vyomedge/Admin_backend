@@ -1,7 +1,7 @@
 
 
-const getPanelDb = require('../config/dbManager');
-
+const getPanelDb = require("../config/dbManager");
+const cloudinary = require("cloudinary").v2;
 
 exports.getAllBlogs = async (req, res) => {
   try {
