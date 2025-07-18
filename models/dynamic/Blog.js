@@ -33,17 +33,11 @@ const blogSchema = new Schema({
     url: {
       type: String,
       required: false,
-      validate: {
-        validator: function (v) {
-          // Allow any Cloudinary URL ending in .jpg/.jpeg/.png
-          return /^https?:\/\/.+\.(jpg|jpeg|png)$/i.test(v);
-        },
-        message: 'Featured image must be a valid JPG or PNG URL'
-      }
+     
     },
     altText: {
       type: String,
-      required: true,
+      required: false,
       trim: true
     }
   },
