@@ -10,10 +10,7 @@ steps:
       'run', 'deploy', 'admin-backend',
       '--image', 'gcr.io/arcane-legacy-466004-s7/admin-backend',
       '--region', 'asia-south1',
-      '--timeout', '600s',
       '--platform', 'managed',
+      '--timeout', '600s',
       '--allow-unauthenticated'
     ]
-
-images:
-  - 'gcr.io/arcane-legacy-466004-s7/admin-backend'
