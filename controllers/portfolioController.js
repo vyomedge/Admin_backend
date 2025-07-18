@@ -71,7 +71,7 @@
 
 
 const cloudinary = require('../config/cloudinary');
-const Portfolio = require('../models/Portfolio');
+const Portfolio = require('../models/dynamic/Portfolio');
 
 exports.createPortfolio = async (req, res) => {
   try {
