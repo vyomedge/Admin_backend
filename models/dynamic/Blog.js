@@ -8,6 +8,16 @@ const blogSchema = new Schema({
     required: true,
     trim: true
   },
+  uid: {
+  type: String,
+  unique: true,
+  required: true, 
+  },
+  description: {
+    type: String,
+    required: true,
+    trim: true
+  },
   authorName: {
     type: String,
     required: false,
@@ -53,13 +63,6 @@ const blogSchema = new Schema({
     },
     canonicalUrl: {
       type: String,
-      validate: {
-        validator: function (v) {
-          return !v || /^https?:\/\/.+$/.test(v);
-        },
-        message: 'Canonical URL must be a valid URL'
-      },
-      trim: true
     }
   },
   ogTags: {

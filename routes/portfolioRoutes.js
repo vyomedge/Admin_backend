@@ -19,7 +19,7 @@
 const express = require('express');
 const router = express.Router();
 const portfolioController = require('../controllers/portfolioController');
-const upload = require('../middleware/multer');
+const {upload} = require('../middleware/multer');
 const { protect } = require('../middleware/auth'); // optional
 
 router.use(protect); // optional auth middleware

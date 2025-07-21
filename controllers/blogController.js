@@ -1,7 +1,7 @@
 
 
 const getPanelDb = require("../config/dbManager");
-const cloudinary = require("cloudinary").v2;
+const { uploadToCloudinary } = require('../middleware/multer');
 
 exports.getAllBlogs = async (req, res) => {
   try {
@@ -32,70 +32,73 @@ exports.getBlogById = async (req, res) => {
 };
 
 exports.createBlog = async (req, res) => {
-  const { panel } = req.user;
-  const { Blog } = getPanelDb(panel);
   try {
-    let featuredImageData = {};
+    const { panel } = req.user;
+    const { Blog } = getPanelDb(panel);
+
+    let imageUrl = null;
+    let public_id =  ''
 
     if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "blogs",
-      });
+      const result = await uploadToCloudinary(req.file.buffer, 'blogs');
+      imageUrl = result.secure_url;
+      public_id =  result.public_id
 
-      featuredImageData = {
-        url: result.secure_url,
-        public_id: result.public_id,
-        altText: req.body.altText || "",
-      };
     }
-
-    const blogData = {
+    const blog = new Blog({
       ...req.body,
-      featuredImage: featuredImageData,
-    };
-    console.log(blogData);
-    const blog = await Blog.create(blogData);
-    res.status(201).json(blog);
+ featuredImage: {
+        url: imageUrl,
+        altText: req.body.featuredImageAltText || '',
+      }
+    });
+    console.log(blog)
+    await blog.save();
+    res.status(201).json({ blog });
   } catch (err) {
-    console.error("Error creating blog:", err);
-    res.status(500).json({ error: "Blog creation failed" });
+    res.status(500).json({ message: err.message });
   }
 };
 
 exports.updateBlog = async (req, res) => {
   try {
-     const { panel } = req.user;
+    const { panel } = req.user;
     const { Blog } = getPanelDb(panel);
 
     const blog = await Blog.findById(req.params.id);
-    if (!blog) return res.status(404).json({ error: 'Blog not found' });
+    if (!blog) return res.status(404).json({ message: 'Blog not found' });
 
-    let featuredImageData = blog.featuredImage;
+    // Parse complex fields
+    const tags = req.body.tags ? req.body.tags: [];
+    const meta = req.body.meta ? req.body.meta : {};
+    const ogTags = req.body.ogTags ? req.body.ogTags : {};
+
+    let featuredImage = blog.featuredImage; // default = existing image
 
     if (req.file) {
-      if (featuredImageData?.public_id) {
-        await cloudinary.uploader.destroy(featuredImageData.public_id);
-      }
-
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: 'blogs',
-      });
-
-      featuredImageData = {
+      const result = await uploadToCloudinary(req.file.buffer, 'blogs');
+      featuredImage = {
         url: result.secure_url,
-        public_id: result.public_id,
-        altText: req.body.altText || '',
+        altText: req.body.featuredImageAltText || '',
       };
-
     }
 
-    blog.set({ ...req.body, featuredImage: featuredImageData });
-    await blog.save();
+    // Update values
+    blog.title = req.body.title || blog.title;
+    blog.description = req.body.description || blog.description;
+    blog.category = req.body.category || blog.category;
+    blog.tags = tags.length ? tags : blog.tags;
+    blog.meta = Object.keys(meta).length ? meta : blog.meta;
+    blog.ogTags = Object.keys(ogTags).length ? ogTags : blog.ogTags;
+    blog.status = req.body.status || blog.status;
+    blog.featuredImage = featuredImage;
 
-    res.status(200).json(blog);
+    await blog.save();
+    res.status(200).json({ blog });
+
   } catch (err) {
-    console.error('Error updating blog:', err);
-    res.status(500).json({ error: 'Blog update failed' });
+    console.error('Update Error:', err);
+    res.status(500).json({ message: err.message });
   }
 };
 

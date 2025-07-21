@@ -14,7 +14,7 @@ const express = require('express');
 const router = express.Router();
 const blogController = require('../controllers/blogController');
 const { protect } = require('../middleware/auth');
-const upload = require('../middleware/multer');
+const {upload} = require('../middleware/multer');
 
 router.use(protect);
 router.get('/', blogController.getAllBlogs);
