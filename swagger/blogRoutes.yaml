@@ -1,0 +1,140 @@
+paths:
+  /api/blogs:
+    get:
+      tags:
+        - Blogs
+      summary: Get all blogs
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+    post:
+      tags:
+        - Blogs
+      summary: Create a blog
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                authorName:
+                  type: string
+                category:
+                  type: string
+                tags:
+                  type: string
+                  description: JSON stringified array e.g. '["JS","Node"]'
+                meta:
+                  type: string
+                  description: JSON stringified meta object
+                ogTags:
+                  type: string
+                  description: JSON stringified ogTags object
+                status:
+                  type: string
+                  enum: [Draft, Published, Scheduled]
+                featuredImage:
+                  type: string
+                  format: binary
+                featuredImageAltText:
+                  type: string
+      responses:
+        '201':
+          description: Blog created
+        '500':
+          description: Server error
+
+  /api/blogs/{id}:
+    get:
+      tags:
+        - Blogs
+      summary: Get blog by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Blog found
+        '404':
+          description: Blog not found
+
+    put:
+      tags:
+        - Blogs
+      summary: Update blog by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                authorName:
+                  type: string
+                category:
+                  type: string
+                tags:
+                  type: string
+                meta:
+                  type: string
+                ogTags:
+                  type: string
+                status:
+                  type: string
+                  enum: [Draft, Published, Scheduled]
+                featuredImage:
+                  type: string
+                  format: binary
+                featuredImageAltText:
+                  type: string
+      responses:
+        '200':
+          description: Blog updated
+        '404':
+          description: Blog not found
+        '500':
+          description: Server error
+
+    delete:
+      tags:
+        - Blogs
+      summary: Delete blog by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Blog deleted
+        '404':
+          description: Blog not found

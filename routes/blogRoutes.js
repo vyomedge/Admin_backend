@@ -1,14 +1,4 @@
 
-// const express = require('express');
-// const router = express.Router();
-// const blogController = require('../controllers/blogController');
-// const { protect } = require('../middleware/auth');
-
-// router.get('/', protect, blogController.getAllBlogs);
-// router.post('/', protect, blogController.createBlog);
-
-// module.exports = router;
-
 
 const express = require('express');
 const router = express.Router();
@@ -24,3 +14,19 @@ router.put('/:id', upload.single('featuredImage'), blogController.updateBlog);
 router.delete('/:id', blogController.deleteBlog);
 
 module.exports = router;
+
+
+
+
+/**
+ * @swagger
+ * /blogs:
+ *   get:
+ *     summary: Get all blogs
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+router.get('/', blogController.getAllBlogs);

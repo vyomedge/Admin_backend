@@ -1,24 +1,36 @@
-// config/swagger.js
-const swaggerJsdoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
+// swagger.js
+const swaggerJSDoc = require("swagger-jsdoc");
 
 const options = {
   definition: {
-    openapi: '3.0.0',
+    openapi: "3.0.0", // or swagger: "2.0"
     info: {
-      title: 'Admin Backend API',
-      version: '1.0.0',
-      description: 'Swagger documentation for Admin Backend APIs',
+      title: "Admin API",
+      version: "1.0.0",
+      description: "API documentation for Admin Panel",
     },
     servers: [
       {
-        url: 'http://localhost:5000', // change if needed
+        url: "http://localhost:3000", // change to your server URL
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
       },
     ],
   },
-  apis: ['./routes/*.js'], // where Swagger will read comments
+  apis: ["./routes/*.js"], // adjust this path to where your route files are
 };
 
-const swaggerSpec = swaggerJsdoc(options);
-
-module.exports = { swaggerUi, swaggerSpec };
+const swaggerSpec = swaggerJSDoc(options);
+module.exports = swaggerSpec;
