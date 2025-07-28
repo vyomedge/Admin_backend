@@ -8,17 +8,28 @@ const categorySchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   },
-  displayName: {
-    type: String,
-    required: true,
-    trim: true,
-  },
   description: {
     type: String,
     default: '',
+    trim: true,
+  },
+  metaTitle: {
+    type: String,
+    default: '',
+    trim: true,
+  },
+  metaDescription: {
+    type: String,
+    default: '',
+    trim: true,
+  },
+  image: {
+    type: String,
+    default: '',
+    trim: true,
   },
 }, {
   timestamps: true,
 });
 
-module.exports = categorySchema;
+module.exports =  mongoose.model("Category", categorySchema); ;

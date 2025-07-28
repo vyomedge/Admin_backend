@@ -42,4 +42,8 @@ const uploadToCloudinary = (buffer, folder = 'blogs') => {
 
 };
 
-module.exports = { upload, uploadToCloudinary };
+const deleteFromCloudinary = (publicId) => {
+  return cloudinary.uploader.destroy(publicId);
+};
+
+module.exports = { upload, uploadToCloudinary , deleteFromCloudinary };
