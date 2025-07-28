@@ -44,6 +44,7 @@ exports.getCategories = async (req, res) => {
     const { Category } = getPanelDb(panel);
 
     const categories = await Category.find().sort({ createdAt: -1 });
+    console.log(categories)
     res.json(categories);
   } catch (err) {
     console.error("Error fetching categories:", err);
