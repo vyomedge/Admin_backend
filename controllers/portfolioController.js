@@ -1,11 +1,15 @@
 
 
 const cloudinary = require('../config/cloudinary');
-const Portfolio = require('../models/dynamic/Portfolio');
+const getPanelDb = require("../config/dbManager");
 
 exports.createPortfolio = async (req, res) => {
   console.log('create protfolio')
+
   try {
+     const { panel } = req.user;
+        const { Portfolio } = getPanelDb(panel);
+    
     const folder = req.query.folder || 'portfolio_images';
     const { category } = req.body;
 
@@ -46,6 +50,8 @@ exports.createPortfolio = async (req, res) => {
 
 exports.getAllPortfolios = async (req, res) => {
   try {
+    const { panel } = req.user;
+        const { Portfolio } = getPanelDb(panel);
     const portfolios = await Portfolio.find();
     res.status(200).json(portfolios);
   } catch (err) {
@@ -55,6 +61,8 @@ exports.getAllPortfolios = async (req, res) => {
 
 exports.getPortfolioById = async (req, res) => {
   try {
+        const { panel } = req.user;
+        const { Portfolio } = getPanelDb(panel);
     const portfolio = await Portfolio.findById(req.params.id);
     if (!portfolio) return res.status(404).json({ message: 'Portfolio not found' });
     res.status(200).json(portfolio);
@@ -65,6 +73,8 @@ exports.getPortfolioById = async (req, res) => {
 
 exports.updatePortfolio = async (req, res) => {
   try {
+        const { panel } = req.user;
+        const { Portfolio } = getPanelDb(panel);
     const folder = req.query.folder || 'portfolio_images';
 
     const portfolio = await Portfolio.findById(req.params.id);
