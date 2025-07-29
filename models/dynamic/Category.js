@@ -32,4 +32,7 @@ const categorySchema = new mongoose.Schema({
   timestamps: true,
 });
 
-module.exports = mongoose.model('Category', categorySchema);
+module.exports = categorySchema
+// module.exports = {
+//   Category: categorySchema,  // ✅ just export schema, NOT model
+// };
