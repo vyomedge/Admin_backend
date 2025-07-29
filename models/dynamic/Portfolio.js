@@ -1,20 +1,25 @@
-// const mongoose = require('mongoose');
-
-// const portfolioSchema = new mongoose.Schema({
-//   images: [{ type: String, required: true }], 
-// }, { timestamps: true });
-
-// module.exports = portfolioSchema;
-
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const portfolioSchema = new mongoose.Schema({
+const portfolioSchema = new Schema({
+  category: {
+      type: mongoose.Schema.Types.ObjectId,
+         ref: "Category",
+         required: true,
+         trim: true,
+  },
   images: [
     {
-      url: String,
-      public_id: String,
-    }
-  ]
-});
+      url: {
+        type: String,
+        required: true,
+      },
+      public_id: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
+}, { timestamps: true });
 
-module.exports =  portfolioSchema;
+module.exports = mongoose.model('Portfolio', portfolioSchema);

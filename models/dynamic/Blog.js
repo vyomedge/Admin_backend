@@ -58,7 +58,7 @@ const blogSchema = new Schema(
         trim: true,
       },
       keywords: {
-        type: String, // comma-separated
+        type: String,
         trim: true,
       },
       canonicalUrl: {

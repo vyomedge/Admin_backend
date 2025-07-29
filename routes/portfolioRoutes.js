@@ -23,11 +23,11 @@ const {upload} = require('../middleware/multer');
 const { protect } = require('../middleware/auth'); // optional
 
 router.use(protect); // optional auth middleware
-
-router.post('/portfolio', upload.array('images', 10), portfolioController.createPortfolio);
-router.get('/portfolio', portfolioController.getAllPortfolios);
-router.get('/portfolio/:id', portfolioController.getPortfolioById);
-router.put('/portfolio/:id', upload.array('images', 10), portfolioController.updatePortfolio);
-router.delete('/portfolio/:id', portfolioController.deletePortfolio);
+console.log('create protfolio')
+router.post('/', upload.array('images', 10), portfolioController.createPortfolio);
+router.get('/', portfolioController.getAllPortfolios);
+router.get('/:id', portfolioController.getPortfolioById);
+router.put('/:id', upload.array('images', 10), portfolioController.updatePortfolio);
+router.delete('/:id', portfolioController.deletePortfolio);
 
 module.exports = router;
