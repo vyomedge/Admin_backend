@@ -52,7 +52,7 @@ exports.getAllPortfolios = async (req, res) => {
   try {
     const { panel } = req.user;
         const { Portfolio } = getPanelDb(panel);
-    const portfolios = await Portfolio.find();
+    const portfolios = await Portfolio.find().populate("category", "name");
     res.status(200).json(portfolios);
   } catch (err) {
     res.status(500).json({ error: err.message });
