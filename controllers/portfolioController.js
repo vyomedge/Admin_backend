@@ -54,6 +54,7 @@ exports.getAllPortfolios = async (req, res) => {
         const { Portfolio } = getPanelDb(panel);
     const portfolios = await Portfolio.find().populate("category", "name");
     res.status(200).json(portfolios);
+    
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -115,6 +116,8 @@ exports.updatePortfolio = async (req, res) => {
 
 exports.deletePortfolio = async (req, res) => {
   try {
+         const { panel } = req.user;
+        const { Portfolio } = getPanelDb(panel);
     const portfolio = await Portfolio.findById(req.params.id);
     if (!portfolio) return res.status(404).json({ message: 'Portfolio not found' });
     for (const img of portfolio.images) {
