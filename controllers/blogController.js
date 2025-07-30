@@ -1,9 +1,11 @@
 const getPanelDb = require("../config/dbManager");
 const { uploadToCloudinary } = require("../middleware/multer");
 
+
 exports.getAllBlogs = async (req, res) => {
   try {
-    const { panel } = req.user;
+    
+    const  panel  = req.params.panel ||  req.user.panel;
     const { Blog } = getPanelDb(panel);
 
     const blogs = await Blog.find().populate("category", "name")  .sort({ createdAt: -1 });
@@ -17,7 +19,7 @@ exports.getAllBlogs = async (req, res) => {
 
 exports.getBlogById = async (req, res) => {
   try {
-    const { panel } = req.user;
+    const  panel  = req.params.panel ||  req.user.panel;
     const { Blog } = getPanelDb(panel);
 
     const blog = await Blog.findById(req.params.id).populate("Category", "name");
