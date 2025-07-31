@@ -19,10 +19,11 @@ exports.getAllBlogs = async (req, res) => {
 
 exports.getBlogById = async (req, res) => {
   try {
+    console.log(req.params.panel , req.params.panel , req.params.id)
     const  panel  = req.params.panel ||  req.user.panel;
     const { Blog } = getPanelDb(panel);
 
-    const blog = await Blog.findById(req.params.id).populate("Category", "name");
+    const blog = await Blog.findById(req.params.id).populate("category", "name");
     if (!blog) return res.status(404).json({ message: "Blog not found" });
 
     res.status(200).json({ blog });
