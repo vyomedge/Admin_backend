@@ -21,7 +21,7 @@ const router = express.Router();
 const portfolioController = require('../controllers/portfolioController');
 const {upload} = require('../middleware/multer');
 const { protect } = require('../middleware/auth'); // optional
-
+router.get('/:panel', portfolioController.getAllPortfolios);
 router.use(protect); // optional auth middleware
 console.log('create protfolio')
 router.post('/', upload.array('images', 10), portfolioController.createPortfolio);

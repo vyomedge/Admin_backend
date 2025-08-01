@@ -14,7 +14,7 @@ COPY . .
 
 RUN npm run build || echo "no build step"
 
-EXPOSE 8080
+EXPOSE 3000
 
 CMD ["node", "index.js"]
 

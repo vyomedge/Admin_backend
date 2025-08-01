@@ -69,13 +69,11 @@ exports.updateBlog = async (req, res) => {
 
     const blog = await Blog.findById(req.params.id);
     if (!blog) return res.status(404).json({ message: "Blog not found" });
-
-    // Parse complex fields
     const tags = req.body.tags ? req.body.tags : [];
     const meta = req.body.meta ? req.body.meta : {};
     const ogTags = req.body.ogTags ? req.body.ogTags : {};
 
-    let featuredImage = blog.featuredImage; // default = existing image
+    let featuredImage = blog.featuredImage; 
 
     if (req.file) {
       const result = await uploadToCloudinary(req.file.buffer, "blogs");
@@ -84,8 +82,6 @@ exports.updateBlog = async (req, res) => {
         altText: req.body.featuredImageAltText || "",
       };
     }
-
-    // Update values
     blog.title = req.body.title || blog.title;
     blog.description = req.body.description || blog.description;
     blog.category = req.body.category || blog.category;
@@ -111,8 +107,6 @@ exports.deleteBlog = async (req, res) => {
 
     const blog = await Blog.findByIdAndDelete(req.params.id);
     if (!blog) return res.status(404).json({ message: "Blog not found" });
-
-    // Delete image from Cloudinary if it exists
     if (blog.featuredImage?.public_id) {
       await cloudinary.uploader.destroy(blog.featuredImage.public_id);
     }
@@ -123,3 +117,4 @@ exports.deleteBlog = async (req, res) => {
     res.status(500).json({ message: "Failed to delete blog" });
   }
 };
+

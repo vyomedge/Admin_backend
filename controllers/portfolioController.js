@@ -1,20 +1,18 @@
-
-
-const cloudinary = require('../config/cloudinary');
+const cloudinary = require("../config/cloudinary");
 const getPanelDb = require("../config/dbManager");
 
 exports.createPortfolio = async (req, res) => {
-  console.log('create protfolio')
+  console.log("create protfolio");
 
   try {
-     const { panel } = req.user;
-        const { Portfolio } = getPanelDb(panel);
-    
-    const folder = req.query.folder || 'portfolio_images';
+    const { panel } = req.user;
+    const { Portfolio } = getPanelDb(panel);
+
+    const folder = req.query.folder || "portfolio_images";
     const { category } = req.body;
 
     if (!category) {
-      return res.status(400).json({ error: 'Category ID is required' });
+      return res.status(400).json({ error: "Category ID is required" });
     }
 
     const images = [];
@@ -40,7 +38,7 @@ exports.createPortfolio = async (req, res) => {
     await portfolio.save();
 
     // Populate category name
-    await portfolio.populate('category', 'name');
+    await portfolio.populate("category", "name");
 
     res.status(201).json(portfolio);
   } catch (err) {
@@ -50,11 +48,10 @@ exports.createPortfolio = async (req, res) => {
 
 exports.getAllPortfolios = async (req, res) => {
   try {
-    const { panel } = req.user;
-        const { Portfolio } = getPanelDb(panel);
+    const panel = req.params.panel || req.user.panel;
+    const { Portfolio } = getPanelDb(panel);
     const portfolios = await Portfolio.find().populate("category", "name");
     res.status(200).json(portfolios);
-    
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -62,10 +59,11 @@ exports.getAllPortfolios = async (req, res) => {
 
 exports.getPortfolioById = async (req, res) => {
   try {
-        const { panel } = req.user;
-        const { Portfolio } = getPanelDb(panel);
+    const { panel } = req.user;
+    const { Portfolio } = getPanelDb(panel);
     const portfolio = await Portfolio.findById(req.params.id);
-    if (!portfolio) return res.status(404).json({ message: 'Portfolio not found' });
+    if (!portfolio)
+      return res.status(404).json({ message: "Portfolio not found" });
     res.status(200).json(portfolio);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -74,14 +72,13 @@ exports.getPortfolioById = async (req, res) => {
 
 exports.updatePortfolio = async (req, res) => {
   try {
-        const { panel } = req.user;
-        const { Portfolio } = getPanelDb(panel);
-    const folder = req.query.folder || 'portfolio_images';
+    const { panel } = req.user;
+    const { Portfolio } = getPanelDb(panel);
+    const folder = req.query.folder || "portfolio_images";
 
     const portfolio = await Portfolio.findById(req.params.id);
-    if (!portfolio) return res.status(404).json({ message: 'Portfolio not found' });
-
-    // delete existing images from Cloudinary
+    if (!portfolio)
+      return res.status(404).json({ message: "Portfolio not found" });
     for (const img of portfolio.images) {
       await cloudinary.uploader.destroy(img.public_id);
     }
@@ -116,17 +113,20 @@ exports.updatePortfolio = async (req, res) => {
 
 exports.deletePortfolio = async (req, res) => {
   try {
-         const { panel } = req.user;
-        const { Portfolio } = getPanelDb(panel);
+    const { panel } = req.user;
+    const { Portfolio } = getPanelDb(panel);
     const portfolio = await Portfolio.findById(req.params.id);
-    if (!portfolio) return res.status(404).json({ message: 'Portfolio not found' });
+    if (!portfolio)
+      return res.status(404).json({ message: "Portfolio not found" });
     for (const img of portfolio.images) {
       await cloudinary.uploader.destroy(img.public_id);
     }
 
     await Portfolio.findByIdAndDelete(req.params.id);
 
-    res.status(200).json({ message: 'Portfolio and images deleted successfully' });
+    res
+      .status(200)
+      .json({ message: "Portfolio and images deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
