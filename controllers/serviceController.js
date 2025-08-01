@@ -6,7 +6,6 @@ exports.createService = async (req, res) => {
     const { panel } = req.user;
     console.log(panel)
     const { Service } = getPanelDb(panel);
-
     let imageUrl = null;
     let public_id = "";
 
@@ -31,11 +30,10 @@ exports.createService = async (req, res) => {
     res.status(500).json({ message: "Failed to create service" });
   }
 };
-
 exports.getServices = async (req, res) => {
   try {
     const panel = req.params.panel || req.user.panel;
-    const { Service } = getPanelDb(panel); // ✅ Correct model
+    const { Service } = getPanelDb(panel);
 
     const services = await Service.find().sort({ createdAt: -1 });
     res.status(200).json({ services });

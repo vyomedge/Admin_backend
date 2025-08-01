@@ -53,7 +53,6 @@ exports.createBlog = async (req, res) => {
         altText: req.body.featuredImageAltText || "",
       },
     });
-    console.log(blog);
     await blog.save();
     const populatedBlog = await Blog.findById(blog._id).populate("category", "name");
     res.status(201).json({ populatedBlog });

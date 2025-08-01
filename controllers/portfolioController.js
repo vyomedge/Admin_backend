@@ -60,6 +60,7 @@ exports.getAllPortfolios = async (req, res) => {
 exports.getPortfoliosByCategoryId = async (req, res) => {
   try {
     const { panel } = req.params;
+    console.log('panel00' , panel) 
     const { Portfolio } = getPanelDb(panel);
     const { categoryIds } = req.body;
        if (!Array.isArray(categoryIds) || categoryIds.length === 0) {

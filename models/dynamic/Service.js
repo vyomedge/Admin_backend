@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const Serviceschema = new mongoose.Schema({
+const Service = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -14,14 +14,13 @@ const Serviceschema = new mongoose.Schema({
     trim: true,
   },
 
-  image: {
-    type: String,
-    default: '',
-    trim: true,
-  },
+image: {
+  url: { type: String, default: '', trim: true },
+  altText: { type: String, default: '', trim: true },
+},
 }, {
   timestamps: true,
 });
 
-module.exports = Serviceschema
+module.exports = Service
 
