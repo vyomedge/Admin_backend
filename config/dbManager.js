@@ -18,7 +18,6 @@ const getPanelDb = (panel) => {
   const db = mongoose.connection.useDb(dbName, { useCache: true });
 
   const registeredModels = {};
-  // console.log(Object.entries(models))
   for (const [key, schema] of Object.entries(models)) {
     registeredModels[key] = db.model(key, schema);
   }

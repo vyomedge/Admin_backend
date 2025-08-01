@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const categorySchema = new mongoose.Schema({
+const Serviceschema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -13,16 +13,7 @@ const categorySchema = new mongoose.Schema({
     default: '',
     trim: true,
   },
-  metaTitle: {
-    type: String,
-    default: '',
-    trim: true,
-  },
-  metaDescription: {
-    type: String,
-    default: '',
-    trim: true,
-  },
+
   image: {
     type: String,
     default: '',
@@ -32,4 +23,5 @@ const categorySchema = new mongoose.Schema({
   timestamps: true,
 });
 
-module.exports = categorySchema
+module.exports = Serviceschema
+

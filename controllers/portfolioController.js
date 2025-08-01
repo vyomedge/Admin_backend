@@ -57,6 +57,25 @@ exports.getAllPortfolios = async (req, res) => {
   }
 };
 
+exports.getPortfoliosByCategoryId = async (req, res) => {
+  try {
+    const { panel } = req.params;
+    const { Portfolio } = getPanelDb(panel);
+    const { categoryId } = req.params;
+console.log(categoryId , panel)
+    const portfolios = await Portfolio.find({ category: categoryId });
+
+    if (!portfolios || portfolios.length === 0) {
+      return res.status(404).json({ message: "No portfolios found for this category" });
+    }
+
+    res.status(200).json({ portfolios });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch portfolios" });
+  }
+};
+
 exports.getPortfolioById = async (req, res) => {
   try {
     const { panel } = req.user;

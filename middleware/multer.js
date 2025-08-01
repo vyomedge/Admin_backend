@@ -9,7 +9,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Multer Memory Storage
 const storage = multer.memoryStorage();
 const upload = multer({
   storage,
@@ -23,7 +22,7 @@ const upload = multer({
   },
 });
 
-// Upload buffer to Cloudinary
+
 const uploadToCloudinary = (buffer, folder = 'blogs') => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
