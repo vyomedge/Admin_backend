@@ -61,9 +61,13 @@ exports.getPortfoliosByCategoryId = async (req, res) => {
   try {
     const { panel } = req.params;
     const { Portfolio } = getPanelDb(panel);
-    const { categoryId } = req.params;
-console.log(categoryId , panel)
-    const portfolios = await Portfolio.find({ category: categoryId });
+    const { categoryIds } = req.body;
+       if (!Array.isArray(categoryIds) || categoryIds.length === 0) {
+      return res.status(400).json({ message: "categoryIds must be a non-empty array" });
+    }
+        const portfolios = await Portfolio.find({
+      category: { $in: categoryIds },
+    });
 
     if (!portfolios || portfolios.length === 0) {
       return res.status(404).json({ message: "No portfolios found for this category" });
