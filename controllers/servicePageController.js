@@ -6,7 +6,7 @@ exports.createServicePage = async (req, res) => {
     const { panel } = req.user;
     const { servicePage } = getPanelDb(panel);
 
-console.log({servicePage})
+    console.log({ servicePage });
     let imageUrl = null;
     let public_id = "";
     if (req.file) {
@@ -14,7 +14,7 @@ console.log({servicePage})
       imageUrl = result.secure_url;
       public_id = result.public_id;
     }
-    console.log(req.body)
+    console.log(req.body);
     const page = new servicePage({
       ...req.body,
       featuredImage: {
@@ -23,11 +23,11 @@ console.log({servicePage})
       },
     });
 
-    console.log(page)
+    console.log(page);
     await page.save();
 
-
-    const populatedPage = await servicePage.findById(page._id)
+    const populatedPage = await servicePage
+      .findById(page._id)
       .populate("serviceCategory", "name")
       .populate("blogcategory", "name")
       .populate("Portfolio", "name");
@@ -39,16 +39,13 @@ console.log({servicePage})
   }
 };
 
-
-
-
-
 exports.getAllServicePages = async (req, res) => {
   try {
-    console.log( req.params.panel)
-        const  panel  = req.params.panel ||  req.user.panel;
+    console.log(req.params.panel);
+    const panel = req.params.panel || req.user.panel;
     const { servicePage } = getPanelDb(panel);
-    const pages = await servicePage.find()
+    const pages = await servicePage
+      .find()
       .populate("serviceCategory")
       .populate("blogcategory")
       .populate("Portfolio");
@@ -60,22 +57,24 @@ exports.getAllServicePages = async (req, res) => {
 };
 
 // // Get single service page by ID
-// exports.getServicePageById = async (req, res) => {
-//   try {
-//     const page = await ServicePage.findById(req.params.id)
-//       .populate("serviceCategory")
-//       .populate("blogcategory")
-//       .populate("Portfolio");
+exports.getServicePageById = async (req, res) => {
+  try {
+        const panel = req.params.panel || req.user.panel;
+    const { servicePage } = getPanelDb(panel);
+    const page = await servicePage.findById(req.params.id)
+      .populate("serviceCategory")
+      .populate("blogcategory")
+      .populate("Portfolio");
 
-//     if (!page) {
-//       return res.status(404).json({ message: "Service page not found" });
-//     }
+    if (!page) {
+      return res.status(404).json({ message: "Service page not found" });
+    }
 
-//     res.status(200).json(page);
-//   } catch (error) {
-//     res.status(500).json({ message: "Failed to fetch service page", error });
-//   }
-// };
+    res.status(200).json(page);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch service page", error });
+  }
+};
 
 // // Update a service page
 // exports.updateServicePage = async (req, res) => {

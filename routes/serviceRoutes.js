@@ -12,6 +12,10 @@ router.get(
   "/AllServicePages/:panel",
   servicePageController.getAllServicePages
 );
+router.get(
+  "/getServicePageById/:id/:panel",
+  servicePageController.getServicePageById
+);
 const { protect } = require("../middleware/auth");
 router.use(protect);
 router.post("/", upload.single("image"), serviceController.createService);
