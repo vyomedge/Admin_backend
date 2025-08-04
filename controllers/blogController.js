@@ -19,7 +19,6 @@ exports.getAllBlogs = async (req, res) => {
 
 exports.getBlogById = async (req, res) => {
   try {
-    console.log(req.params.panel , req.params.panel , req.params.id)
     const  panel  = req.params.panel ||  req.user.panel;
     const { Blog } = getPanelDb(panel);
 
