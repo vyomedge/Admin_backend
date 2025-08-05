@@ -46,9 +46,9 @@ exports.getAllServicePages = async (req, res) => {
     const { servicePage } = getPanelDb(panel);
     const pages = await servicePage
       .find()
-      .populate("serviceCategory")
-      .populate("blogcategory")
-      .populate("Portfolio");
+       .populate("serviceCategory", "name")
+      .populate("blogcategory", "name")
+      .populate("Portfolio", "name");
 
     res.status(200).json(pages);
   } catch (error) {
@@ -59,18 +59,38 @@ exports.getAllServicePages = async (req, res) => {
 // // Get single service page by ID
 exports.getServicePageById = async (req, res) => {
   try {
-        const panel = req.params.panel || req.user.panel;
-    const { servicePage } = getPanelDb(panel);
+    const panel = req.params.panel || req.user.panel;
+    const { servicePage, Blog, Category  , Portfolio} = getPanelDb(panel);
+
+    // 1. Find the service page
     const page = await servicePage.findById(req.params.id)
       .populate("serviceCategory")
-      .populate("blogcategory")
+      .populate("blogcategory") // Now it populates the Category
       .populate("Portfolio");
 
     if (!page) {
       return res.status(404).json({ message: "Service page not found" });
     }
+console.log('asdsada' ,  page.Portfolio)
+    // 2. Find all blogs that belong to the same category
+    const blogs = await Blog.find({ category: page.blogcategory._id });
+//    3. Extract portfolio categories from current page
+    // const selectedPortfolioCategories = [page.Portfolio].map(p => p._id.toString());
+    // console.log("Selected categories:", selectedPortfolioCategories);
+    const selectedPortfolioIds =[ page.Portfolio].map(p => p._id.toString());
+    // 4. Find related portfolios (same categories, exclude current)
+    // const relatedPortfolios = await Portfolio.find({
+    // //   category: { $in: selectedPortfolioCategories },
+    //   _id: { $nin: selectedPortfolioIds },
+    // });
+    const relatedPortfolios = await Portfolio.find({ category: [ page.Portfolio].map(p => p._id.toString())});
 
-    res.status(200).json(page);
+    console.log(relatedPortfolios)
+    res.status(200).json({
+      ...page.toObject(),
+      relatedBlogs: blogs,
+      relatedPortfolios: relatedPortfolios
+    });
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch service page", error });
   }
