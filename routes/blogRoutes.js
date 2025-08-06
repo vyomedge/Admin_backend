@@ -10,7 +10,6 @@ router.get('/:panel', blogController.getAllBlogs);
 router.get('/:id/:panel', blogController.getBlogById);
 router.use(protect);
 router.get('/', blogController.getAllBlogs);
-// router.get('/:panel', blogController.getAllBlogs);
 router.get('/:id', blogController.getBlogById);
 router.post('/', upload.single('featuredImage'), blogController.createBlog);
 router.put('/:id', upload.single('featuredImage'), blogController.updateBlog);

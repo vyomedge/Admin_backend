@@ -30,6 +30,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/blogs', require('./routes/blogRoutes'));
 app.use('/api/portfolio', require('./routes/portfolioRoutes'));
 app.use('/api/category', require('./routes/categoryRoutes'));
+app.use('/api/service', require('./routes/serviceRoutes'));
 app.use('/api/userform', require('./routes/formRoutes'));
 
 app.get('/', (req, res) => res.send('API is running...'));

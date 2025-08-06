@@ -18,7 +18,7 @@ const formSubmissionSchema = new Schema(
       trim: true,
       lowercase: true,
     },
-    phone: {
+    phoneNo: {
       type: String,
       trim: true,
       required: false,
