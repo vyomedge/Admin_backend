@@ -69,15 +69,21 @@ exports.getServicePageById = async (req, res) => {
     if (!page) {
       return res.status(404).json({ message: "Service page not found" });
     }
+    const categoryIds = Array.isArray(page.blogcategory)
+      ? page.blogcategory.map((c) => c._id.toString())
+      : [page.blogcategory._id.toString()];
+
     const blogs = await Blog.find({
-      category:[ page.blogcategory].map((c) => c._id.toString()),
-    });
+      category: categoryIds,
+    }).populate("category", "name");
+
+    const portfolioCategoryIds = Array.isArray(page.Portfolio)
+      ? page.Portfolio.map((p) => p._id.toString())
+      : [page.Portfolio._id.toString()];
 
     const relatedPortfolios = await Portfolio.find({
-      category: [page.Portfolio].map((p) => p._id.toString()),
-    });
-
-    console.log(relatedPortfolios);
+      category: portfolioCategoryIds,
+    }).populate("category", "name");
     res.status(200).json({
       ...page.toObject(),
       relatedBlogs: blogs,
