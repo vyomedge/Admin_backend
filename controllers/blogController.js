@@ -1,15 +1,15 @@
+const { default: mongoose } = require("mongoose");
 const getPanelDb = require("../config/dbManager");
 const { uploadToCloudinary } = require("../middleware/multer");
 
-
 exports.getAllBlogs = async (req, res) => {
   try {
-    
-    const  panel  = req.params.panel ||  req.user.panel;
+    const panel = req.params.panel || req.user.panel;
     const { Blog } = getPanelDb(panel);
 
-    const blogs = await Blog.find().populate("category", "name")  .sort({ createdAt: -1 });
-    console.log(blogs)
+    const blogs = await Blog.find()
+      .populate("category", "name")
+      .sort({ createdAt: -1 });
     res.status(200).json({ blogs });
   } catch (err) {
     console.error(err);
@@ -19,10 +19,22 @@ exports.getAllBlogs = async (req, res) => {
 
 exports.getBlogById = async (req, res) => {
   try {
-    const  panel  = req.params.panel ||  req.user.panel;
+    const panel = req?.params?.panel || req.user.panel;
     const { Blog } = getPanelDb(panel);
 
-    const blog = await Blog.findById(req.params.id).populate("category", "name");
+    const identifier = req.params.id;
+
+    let blog = null;
+    if (mongoose.Types.ObjectId.isValid(identifier)) {
+      blog = await Blog.findById(identifier).populate("category", "name");
+    }
+    if (!blog) {
+      blog = await Blog.findOne({ uid: identifier }).populate(
+        "category",
+        "name"
+      );
+    }
+
     if (!blog) return res.status(404).json({ message: "Blog not found" });
 
     res.status(200).json({ blog });
@@ -53,7 +65,10 @@ exports.createBlog = async (req, res) => {
       },
     });
     await blog.save();
-    const populatedBlog = await Blog.findById(blog._id).populate("category", "name");
+    const populatedBlog = await Blog.findById(blog._id).populate(
+      "category",
+      "name"
+    );
     res.status(201).json({ populatedBlog });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -71,7 +86,7 @@ exports.updateBlog = async (req, res) => {
     const meta = req.body.meta ? req.body.meta : {};
     const ogTags = req.body.ogTags ? req.body.ogTags : {};
 
-    let featuredImage = blog.featuredImage; 
+    let featuredImage = blog.featuredImage;
 
     if (req.file) {
       const result = await uploadToCloudinary(req.file.buffer, "blogs");
@@ -90,7 +105,10 @@ exports.updateBlog = async (req, res) => {
     blog.featuredImage = featuredImage;
 
     await blog.save();
-      const populatedBlog = await Blog.findById(blog._id).populate("category", "name");
+    const populatedBlog = await Blog.findById(blog._id).populate(
+      "category",
+      "name"
+    );
     res.status(200).json({ populatedBlog });
   } catch (err) {
     console.error("Update Error:", err);
@@ -115,4 +133,3 @@ exports.deleteBlog = async (req, res) => {
     res.status(500).json({ message: "Failed to delete blog" });
   }
 };
-

@@ -6,7 +6,7 @@ const blogController = require('../controllers/blogController');
 const { protect } = require('../middleware/auth');
 const {upload} = require('../middleware/multer');
 
-router.get('/:panel', blogController.getAllBlogs);
+router.get('/all/:panel', blogController.getAllBlogs);
 router.get('/:id/:panel', blogController.getBlogById);
 router.use(protect);
 router.get('/', blogController.getAllBlogs);

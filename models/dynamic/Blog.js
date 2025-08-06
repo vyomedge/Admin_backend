@@ -11,6 +11,7 @@ const blogSchema = new Schema(
     uid: {
       type: String,
       unique: true,
+      index: true,
       required: true,
     },
     description: {
@@ -92,5 +93,5 @@ const blogSchema = new Schema(
     },
   }
 );
-
+blogSchema.index({ uid: 1, category: 1 });
 module.exports = blogSchema;
