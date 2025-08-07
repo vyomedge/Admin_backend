@@ -62,12 +62,12 @@ exports.getServicePageById = async (req, res) => {
     if (mongoose.Types.ObjectId.isValid(identifier)) {
       page = await servicePage
         .findById(identifier)
-        .populate("serviceCategory" , 'name' )
+        .populate("serviceCategory" )
     }
     if (!page) {
       page = await servicePage
         .findOne({ uid: identifier })
-        .populate("serviceCategory" , 'name')
+        .populate("serviceCategory" )
     }
 
     console.log(page)
@@ -103,23 +103,56 @@ exports.getServicePageById = async (req, res) => {
 };
 
 // // Update a service page
-// exports.updateServicePage = async (req, res) => {
-//   try {
-//     const updatedPage = await ServicePage.findByIdAndUpdate(
-//       req.params.id,
-//       req.body,
-//       { new: true }
-//     );
+exports.updateServicePageById = async (req, res) => {
+  try {
+    const { panel } = req.user;
+    const { servicePage } = getPanelDb(panel);
 
-//     if (!updatedPage) {
-//       return res.status(404).json({ message: "Service page not found" });
-//     }
+    const pageId = req.params.id;
 
-//     res.status(200).json(updatedPage);
-//   } catch (error) {
-//     res.status(500).json({ message: "Failed to update service page", error });
-//   }
-// };
+    // Fetch existing page
+    const existingPage = await servicePage.findById(pageId);
+    if (!existingPage) {
+      return res.status(404).json({ message: "Service page not found" });
+    }
+
+    let imageUrl = existingPage.featuredImage?.url || null;
+    let public_id = existingPage.featuredImage?.public_id || "";
+
+    // If a new file is uploaded, upload it to Cloudinary
+    if (req.file) {
+      const result = await uploadToCloudinary(req.file.buffer, "servicepages");
+      imageUrl = result.secure_url;
+      public_id = result.public_id;
+    }
+
+    // Update the fields
+    const updatedData = {
+      ...req.body,
+      featuredImage: {
+        url: imageUrl,
+        altText: req.body.featuredImage?.AltText || existingPage.featuredImage?.altText || "",
+        public_id,
+      },
+    };
+
+    // Update the service page
+    const updatedPage = await servicePage.findByIdAndUpdate(
+      pageId,
+      updatedData,
+      { new: true }
+    )
+    .populate("serviceCategory", "name")
+    .populate("blogcategory", "name")
+    .populate("Portfolio", "name");
+
+    res.status(200).json({ updatedPage });
+  } catch (error) {
+    console.error("Error updating service page:", error);
+    res.status(500).json({ message: "Failed to update service page", error });
+  }
+};
+
 
 // // Delete a service page
 // exports.deleteServicePage = async (req, res) => {
