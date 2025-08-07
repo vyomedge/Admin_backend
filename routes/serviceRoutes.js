@@ -12,9 +12,12 @@ const { protect } = require("../middleware/auth");
 router.use(protect);
 router.post("/", upload.single("image"), serviceController.createService);
 router.get("/", serviceController.getServices);
+
+
+
+// service pages apis 
 router.post("/servicepage", upload.single("featuredImage"), servicePageController.createServicePage);
-// router.get('/:id', serviceController.getPortfolioById);
-// router.put('/:id', upload.array('images', 10), serviceController.updatePortfolio);
-// router.delete('/:id', serviceController.deletePortfolio);
+router.put('/:id', upload.single('featuredImage'), servicePageController.updateServicePageById);
+router.delete('/:id', servicePageController.deleteServicePageById);
 
 module.exports = router;

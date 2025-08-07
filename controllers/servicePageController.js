@@ -1,13 +1,12 @@
 const { default: mongoose } = require("mongoose");
 const getPanelDb = require("../config/dbManager");
-const { uploadToCloudinary } = require("../middleware/multer");
+const { uploadToCloudinary, deleteFromCloudinary } = require("../middleware/multer");
 
 exports.createServicePage = async (req, res) => {
   try {
+    console.log('panel')
     const { panel } = req.user;
     const { servicePage } = getPanelDb(panel);
-
-    console.log({ servicePage });
     let imageUrl = null;
     let public_id = "";
     if (req.file) {
@@ -107,7 +106,7 @@ exports.updateServicePageById = async (req, res) => {
   try {
     const { panel } = req.user;
     const { servicePage } = getPanelDb(panel);
-
+console.log(servicePage                     )
     const pageId = req.params.id;
 
     // Fetch existing page
@@ -155,16 +154,31 @@ exports.updateServicePageById = async (req, res) => {
 
 
 // // Delete a service page
-// exports.deleteServicePage = async (req, res) => {
-//   try {
-//     const deletedPage = await ServicePage.findByIdAndDelete(req.params.id);
+exports.deleteServicePageById = async (req, res) => {
+  try {
+    const { panel } = req.user;
+    const { servicePage } = getPanelDb(panel);
 
-//     if (!deletedPage) {
-//       return res.status(404).json({ message: "Service page not found" });
-//     }
+    const pageId = req.params.id;
 
-//     res.status(200).json({ message: "Service page deleted successfully" });
-//   } catch (error) {
-//     res.status(500).json({ message: "Failed to delete service page", error });
-//   }
-// };
+    // 1. Find the service page
+    const page = await servicePage.findById(pageId);
+    if (!page) {
+      return res.status(404).json({ message: "Service page not found" });
+    }
+
+    // 2. Delete image from Cloudinary if it exists
+    const publicId = page.featuredImage?.public_id;
+    if (publicId) {
+      await deleteFromCloudinary(publicId);
+    }
+
+    // 3. Delete the page from database
+    await servicePage.findByIdAndDelete(pageId);
+
+    res.status(200).json({ message: "Service page deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting service page:", error);
+    res.status(500).json({ message: "Failed to delete service page", error });
+  }
+};
