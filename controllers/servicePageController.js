@@ -75,7 +75,7 @@ exports.getServicePageById = async (req, res) => {
     if (!page) {
       page = await servicePage
         .findOne({ uid: identifier })
-        .populate("serviceCategory")
+        .populate("serviceCategory" , 'name')
         .populate("blogcategory", "name")
         .populate("Portfolio", "name");
     }
