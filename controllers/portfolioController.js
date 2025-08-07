@@ -60,18 +60,22 @@ exports.getAllPortfolios = async (req, res) => {
 exports.getPortfoliosByCategoryId = async (req, res) => {
   try {
     const { panel } = req.params;
-    console.log('panel00' , panel) 
+    console.log("panel00", panel);
     const { Portfolio } = getPanelDb(panel);
     const { categoryIds } = req.body;
-       if (!Array.isArray(categoryIds) || categoryIds.length === 0) {
-      return res.status(400).json({ message: "categoryIds must be a non-empty array" });
+    if (!Array.isArray(categoryIds) || categoryIds.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "categoryIds must be a non-empty array" });
     }
-        const portfolios = await Portfolio.find({
+    const portfolios = await Portfolio.find({
       category: { $in: categoryIds },
     });
 
     if (!portfolios || portfolios.length === 0) {
-      return res.status(404).json({ message: "No portfolios found for this category" });
+      return res
+        .status(404)
+        .json({ message: "No portfolios found for this category" });
     }
 
     res.status(200).json({ portfolios });
@@ -145,9 +149,7 @@ exports.deletePortfolio = async (req, res) => {
     for (const img of portfolio.images) {
       await cloudinary.uploader.destroy(img.public_id);
     }
-
     await Portfolio.findByIdAndDelete(req.params.id);
-
     res
       .status(200)
       .json({ message: "Portfolio and images deleted successfully" });

@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const getPanelDb = require("../config/dbManager");
 const { uploadToCloudinary } = require("../middleware/multer");
 
@@ -60,15 +61,29 @@ exports.getServicePageById = async (req, res) => {
   try {
     const panel = req.params.panel || req.user.panel;
     const { servicePage, Blog, Category, Portfolio } = getPanelDb(panel);
-    const page = await servicePage
-      .findById(req.params.id)
-      .populate("serviceCategory")
-      .populate("blogcategory", "name")
-      .populate("Portfolio", "name");
+    const identifier = req.params.id;
+    let page = null;
+    if (mongoose.Types.ObjectId.isValid(identifier)) {
+      page = await servicePage
+        .findById(identifier)
+        .populate("serviceCategory")
+        .populate("blogcategory", "name")
+        .populate("Portfolio", "name");
+    }
+
+    // If not found by _id, try to find by uid
+    if (!page) {
+      page = await servicePage
+        .findOne({ uid: identifier })
+        .populate("serviceCategory")
+        .populate("blogcategory", "name")
+        .populate("Portfolio", "name");
+    }
 
     if (!page) {
       return res.status(404).json({ message: "Service page not found" });
     }
+    console.log(page);
     const categoryIds = Array.isArray(page.blogcategory)
       ? page.blogcategory.map((c) => c._id.toString())
       : [page.blogcategory._id.toString()];
@@ -84,6 +99,8 @@ exports.getServicePageById = async (req, res) => {
     const relatedPortfolios = await Portfolio.find({
       category: portfolioCategoryIds,
     }).populate("category", "name");
+
+    console.log(relatedPortfolios);
     res.status(200).json({
       ...page.toObject(),
       relatedBlogs: blogs,

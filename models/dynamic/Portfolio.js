@@ -8,7 +8,6 @@ const portfolioSchema = new Schema({
          required: true,
          trim: true,
   },
-  
   images: [
     {
       url: {
