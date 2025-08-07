@@ -15,7 +15,6 @@ exports.createServicePage = async (req, res) => {
       imageUrl = result.secure_url;
       public_id = result.public_id;
     }
-    console.log(req.body);
     const page = new servicePage({
       ...req.body,
       featuredImage: {
@@ -23,10 +22,7 @@ exports.createServicePage = async (req, res) => {
         altText: req.body.featuredImage["AltText"] || "",
       },
     });
-
-    console.log(page);
     await page.save();
-
     const populatedPage = await servicePage
       .findById(page._id)
       .populate("serviceCategory", "name")
@@ -66,20 +62,15 @@ exports.getServicePageById = async (req, res) => {
     if (mongoose.Types.ObjectId.isValid(identifier)) {
       page = await servicePage
         .findById(identifier)
-        .populate("serviceCategory" ,'name')
-        .populate("blogcategory", "name")
-        .populate("Portfolio", "name");
+        .populate("serviceCategory" , 'name' )
     }
-
-    // If not found by _id, try to find by uid
     if (!page) {
       page = await servicePage
         .findOne({ uid: identifier })
         .populate("serviceCategory" , 'name')
-        .populate("blogcategory", "name")
-        .populate("Portfolio", "name");
     }
 
+    console.log(page)
     if (!page) {
       return res.status(404).json({ message: "Service page not found" });
     }
@@ -100,7 +91,7 @@ exports.getServicePageById = async (req, res) => {
       category: portfolioCategoryIds,
     }).populate("category", "name");
 
-    console.log(relatedPortfolios);
+    // console.log(relatedPortfolios);
     res.status(200).json({
       ...page.toObject(),
       relatedBlogs: blogs,
