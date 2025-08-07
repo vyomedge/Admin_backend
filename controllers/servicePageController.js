@@ -66,7 +66,7 @@ exports.getServicePageById = async (req, res) => {
     if (mongoose.Types.ObjectId.isValid(identifier)) {
       page = await servicePage
         .findById(identifier)
-        .populate("serviceCategory")
+        .populate("serviceCategory" ,'name')
         .populate("blogcategory", "name")
         .populate("Portfolio", "name");
     }
