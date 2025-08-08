@@ -16,6 +16,7 @@ router.get("/", serviceController.getServices);
 
 
 // service pages apis 
+router.get("/AllService", servicePageController.getAllServicePages);
 router.post("/servicepage", upload.single("featuredImage"), servicePageController.createServicePage);
 router.put('/:id', upload.single('featuredImage'), servicePageController.updateServicePageById);
 router.delete('/:id', servicePageController.deleteServicePageById);
