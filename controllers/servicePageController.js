@@ -37,6 +37,7 @@ exports.createServicePage = async (req, res) => {
 
 exports.getAllServicePages = async (req, res) => {
   try {
+    console.log(req?.user?.panel)
     const panel = req?.params?.panel || req?.user?.panel;
     const { servicePage } = getPanelDb(panel);
     const pages = await servicePage
